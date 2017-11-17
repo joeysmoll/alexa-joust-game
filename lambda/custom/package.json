@@ -1,0 +1,14 @@
+{
+  "name": "joust",
+  "version": "1.0.0",
+  "description": "Jousting game",
+  "scripts": {
+    "test": "node /mnt/c/Users/Joey/Documents/Alexa/Joust/tests/test.js",
+    "upload": "aws lambda update-function-code --function-name 'ask-custom-joustSkill-default' --zip-file fileb://../index.zip",
+    "zip": "zip -r ../index.zip . -x 'package.json' ",
+    "deploy": "npm run zip && npm run upload"
+  },
+  "dependencies": {
+    "alexa-sdk": "^1.0.0"
+  }
+}

@@ -1,0 +1,97 @@
+{
+    "interactionModel":{
+        "languageModel": {
+            "types": [
+              {
+                "name": "ATTACK_LIST",
+                "values": [
+                  {
+                    "id": null,
+                    "name": {
+                      "value": "head",
+                      "synonyms": [
+                        "face",
+                        "helmet"
+                      ]
+                    }
+                  },
+                  {
+                    "id": null,
+                    "name": {
+                      "value": "body",
+                      "synonyms": [
+                        "chest",
+                        "torso"
+                      ]
+                    }
+                  }
+                ]
+              },
+              {
+                "name": "PROTECT_LIST",
+                "values": [
+                  {
+                    "id": null,
+                    "name": {
+                      "value": "head",
+                      "synonyms": [
+                        "face",
+                        "helmet"
+                      ]
+                    }
+                  },
+                  {
+                    "id": null,
+                    "name": {
+                      "value": "body",
+                      "synonyms": [
+                        "chest",
+                        "torso"
+                      ]
+                    }
+                  }
+                ]
+              }
+            ],
+            "intents": [
+              {
+                "name": "AMAZON.CancelIntent",
+                "samples": []
+              },
+              {
+                "name": "AMAZON.HelpIntent",
+                "samples": []
+              },
+              {
+                "name": "AMAZON.StopIntent",
+                "samples": []
+              },
+              {
+                "name": "AttackIntent",
+                "samples": [
+                  "{attack}"
+                ],
+                "slots": [
+                  {
+                    "name": "attack",
+                    "type": "ATTACK_LIST"
+                  }
+                ]
+              },
+              {
+                "name": "ProtectIntent",
+                "samples": [
+                  "{protect}"
+                ],
+                "slots": [
+                  {
+                    "name": "protect",
+                    "type": "PROTECT_LIST"
+                  }
+                ]
+              }
+            ],
+            "invocationName": "joust"
+          }
+    }
+}
