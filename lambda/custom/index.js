@@ -9,12 +9,8 @@ exports.handler = function(event, context) {
     var alexa = Alexa.handler(event, context);
     alexa.dynamoDBTableName = 'joustTable';
     alexa.appId = APP_ID;
-    alexa.registerHandlers(handlers, attackStateHandlers, AttackProtectHandlers);
+    alexa.registerHandlers(handlers, AttackProtectHandlers);
     alexa.execute();
-};
-
-const STATES = {
-    ATTACK: '_attack',
 };
 
 var handlers = {
@@ -30,7 +26,6 @@ var handlers = {
         this.attributes['enemyAttPro'] = enemyAttPro;
         this.attributes['attack'] = null;
         this.attributes['protect'] = null;
-        this.handler.state = STATES.ATTACK;
         this.response.speak("<audio src='https://s3.amazonaws.com/joey-sound-effects/royal-trumpets.mp3'/> Hello worthy knight. Lets see if we can knock your opponent off their steed. You'll be facing, the " + randomOpponent + ". Prepare your lance. Will you be attacking the body or head.").listen('Please say head or body.');
         this.emit(':responseReady');
     },
@@ -43,7 +38,6 @@ var handlers = {
         this.attributes['enemyAttPro'] = enemyAttPro;
         this.attributes['attack'] = null;
         this.attributes['protect'] = null;
-        this.handler.state = STATES.ATTACK;
         this.response.speak("You will now be facing, the " + randomOpponent + ". Goodluck. Will you be attacking your opponents body or head.").listen('Please say head or body.');
         this.emit(':responseReady');
     },
@@ -64,10 +58,7 @@ var handlers = {
     },
     'Unhandled' : function() {
         this.response.speak("Sorry, I didn't get that.");
-    }
-};
-
-const attackStateHandlers = Alexa.CreateStateHandler(STATES.ATTACK, {
+    },
     'AttackIntent': function(){
         var speechText = null;
         var attackPart = this.event.request.intent.slots.attack.value;
@@ -92,45 +83,21 @@ const attackStateHandlers = Alexa.CreateStateHandler(STATES.ATTACK, {
         this.emit('PlayAgainIntent');
     },
     'AMAZON.NoIntent' : function() {
-        delete this.handler.state;
-        delete this.attributes['STATE'];
         this.response.speak('see you next time');
-        this.emit(':saveState', 'true');
-    },
-    'SessionEndedRequest' : function() {
-        console.log('Session ended with reason: ' + this.event.request.reason);
-    },
-    'AMAZON.StopIntent' : function() {
-        delete this.handler.state;
-        delete this.attributes['STATE'];
-        this.response.speak('See you next time');
         this.emit(':responseReady');
     },
-    'AMAZON.HelpIntent' : function() {
-        this.response.speak("All you need to do is specify head or body when attacking your opponent, or protect yourself from your opponents attacks. Please state head or body.".listen(''));
-        this.emit(':responseReady');
-    },
-    'AMAZON.CancelIntent' : function() {
-        delete this.handler.state;
-        delete this.attributes['STATE'];
-        this.response.speak('See you next time');
-        this.emit(':responseReady');
-    },
-    'Unhandled' : function() {
-        this.response.speak("Sorry, I didn't get that.");
-    }
-});
+};
 
 const AttackProtectHandlers = {
     'AttackHead': function() {
         this.response.speak('Your attacking the head. Are you going to protect your body or head with your shield?')
         .listen('Please say head or body.');
-        this.emit(':saveState', true);
+        this.emit(':responseReady');
     },
     'AttackBody': function() {
         this.response.speak('Your attacking the body. Are you going to protect your body or head with your shield?')
         .listen('Please say head or body.');
-        this.emit(':saveState', true);
+        this.emit(':responseReady');
     },
     'ProtectHead': function() {
         if(this.attributes['attack'] ==  this.attributes['enemyAttPro'][1] &&  this.attributes['enemyAttPro'][0] != 'head'){
@@ -145,13 +112,11 @@ const AttackProtectHandlers = {
             //tie
             this.response.speak("Your protecting your head. Goodluck. <audio src='https://s3.amazonaws.com/joey-sound-effects/Jousting+-+Pass+With+Contact.mp3'/> It's a draw. Would you like to play again?").listen('');
         }
-        delete this.handler.state;
-        this.emit(':saveState', true);
+        this.emit(':responseReady');
     },
     'ProtectBody': function() {
         if(this.attributes['attack'] ==  this.attributes['enemyAttPro'][1] &&  this.attributes['enemyAttPro'][0] != 'body'){
             //you lose
-            delete this.handler.state;
             this.response.speak("Your shielding your body. Goodluck. <audio src='https://s3.amazonaws.com/joey-sound-effects/Jousting+-+Knight+Falls.mp3'/> <audio src='https://s3.amazonaws.com/joey-sound-effects/Crowd+gasping+sound+effect+in+shock+sound.mp3/> Better luck next time. Would you like to play again?").listen('');
         }
         else if(this.attributes['attack'] !=  this.attributes['enemyAttPro'][1] &&  this.attributes['enemyAttPro'][0] == 'body'){
@@ -162,7 +127,6 @@ const AttackProtectHandlers = {
             //tie
             this.response.speak("Your shielding your body. Goodluck. <audio src='https://s3.amazonaws.com/joey-sound-effects/Jousting+-+Pass+With+Contact.mp3'/> Its a draw. Would you like to play again?").listen('');
         }
-        delete this.handler.state;
-        this.emit(':saveState', true);
+        this.emit(':responseReady');
     },
 };
