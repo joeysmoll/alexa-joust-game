@@ -78,6 +78,9 @@ var handlers = {
             this.attributes['protect'] = 'body';
             this.emit('ProtectBody');
         }
+        else{
+            this.emit("RepeatIntent");
+        }
     },
     'AMAZON.YesIntent' : function() {
         this.emit('PlayAgainIntent');
@@ -133,4 +136,7 @@ const AttackProtectHandlers = {
         }
         this.emit(':responseReady');
     },
+    'RepeatIntent' : function(){
+        this.emit(':ask', "I didn't catch that. Please state body or head");
+    }
 };
